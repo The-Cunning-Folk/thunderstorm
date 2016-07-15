@@ -1,5 +1,4 @@
 require 'json'
-require "highline/import"
 
 def find_rot(element)
   splitter = element.split('r')
@@ -20,7 +19,12 @@ def find_flip(element, axis)
 end
 
 def get_argument(request, arg)
-  ARGV[arg] ||= ask request
+  if !ARGV[arg]
+    puts request
+    file_name = gets.chomp
+  else
+    filename = ARGV[arg]
+  end
 end
 
 def build_tiles
