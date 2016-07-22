@@ -66,7 +66,6 @@ def tile_stripper(tiles)
     if !tile[:flipX]
       tile.delete(:flipX)
     end
-    puts tile
   end
 end
 
