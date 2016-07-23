@@ -56,7 +56,7 @@ def build_tiles
     y += 1
   end
   level_file.close
-  tile_stripper(tiles)
+ # tile_stripper(tiles)
 end
 
 def tile_stripper(tiles)
