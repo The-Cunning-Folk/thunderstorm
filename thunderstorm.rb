@@ -35,6 +35,7 @@ def build_tiles
   level_file = File.new(input_file, "r")
   level_file.readlines.each do |line|
     x = 0
+    x -= 1
     rot = 0
     flipX = false
     flipY = false
@@ -48,9 +49,9 @@ def build_tiles
           tiles[tile_count][:flipX] = !flipX
           tiles[tile_count][:rot] = rot + 2
         end
-        x += 1
         tile_count += 1
       end
+      x += 1
     end
     y += 1
   end
