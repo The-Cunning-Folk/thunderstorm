@@ -29,12 +29,12 @@ end
 
 def build_tiles
   input_file = get_argument('input txt file: ', 0)
-  x = 0
+  y = 0
   tile_count = 0
   tiles = []
   level_file = File.new(input_file, "r")
   level_file.readlines.each do |line|
-    y = 0
+    x = 0
     rot = 0
     flipX = false
     flipY = false
@@ -48,11 +48,11 @@ def build_tiles
           tiles[tile_count][:flipX] = !flipX
           tiles[tile_count][:rot] = rot + 2
         end
-        y += 1
+        x += 1
         tile_count += 1
       end
     end
-    x += 1
+    y += 1
   end
   level_file.close
   tile_stripper(tiles)
