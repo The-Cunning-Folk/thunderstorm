@@ -1,4 +1,5 @@
 require 'json'
+require 'neatjson'
 
 def find_rot(element)
   splitter = element.split('r')
@@ -18,7 +19,7 @@ def find_flip(element, axis)
   end
 end
 
-def get_argument(request, arg)
+def get_file_name(request, arg)
   if !ARGV[arg]
     puts request
     file_name = gets.chomp
@@ -27,14 +28,43 @@ def get_argument(request, arg)
   end
 end
 
+def get_ground_or_ceil(request)
+  if !ARGV[2]
+    puts request
+    ground_or_ceil = gets.chomp
+  else
+    ground_or_ceil = ARGV[2]
+  end
+  if ground_or_ceil.chomp != "ground" && ground_or_ceil.chomp != "ceiling"
+    puts "Error! You supplied: '" + ground_or_ceil + "'"
+    puts "Please supply 'ground' or 'ceiling'"
+    return nil
+  end
+  ground_or_ceil
+end
+
+def get_layer(request)
+  if !ARGV[3]
+    puts request
+    layer = gets.chomp.to_i
+  else
+    layer = ARGV[3].to_i
+  end
+  if !Integer(layer)  
+    puts "Error! Please supply a layer number"
+    return nil
+  end
+  layer
+end
+
 def build_tiles
-  input_file = get_argument('input txt file: ', 0)
-  y = 0
+  input_file = get_file_name('input txt file: ', 0)
+  y = -8
   tile_count = 0
   tiles = []
   level_file = File.new(input_file, "r")
   level_file.readlines.each do |line|
-    x = 0
+    x = -15
     x -= 1
     rot = 0
     flipX = false
@@ -57,6 +87,7 @@ def build_tiles
   end
   level_file.close
  # tile_stripper(tiles)
+  tiles
 end
 
 def tile_stripper(tiles)
@@ -70,14 +101,21 @@ def tile_stripper(tiles)
   end
 end
 
-def json_writer(tiles)
-  output_file = get_argument('output json file: ',1)
-  json_file = File.open(output_file,"w")
-  tiles.each do |tile|
-    json_file.puts(tile.to_json + ',')
-  end
-  json_file.close
+def write_to_level(tiles)
+  level_file = get_file_name('output json file: ',1)
+  ground_or_ceil = get_ground_or_ceil('ground or ceiling: ').to_s
+  if !ground_or_ceil then return end
+  layer = get_layer('layer: ')
+  if !layer then return end
+  file = File.read(level_file)
+  data_hash = JSON.parse(file)
+  data_hash[ground_or_ceil]['layers'][layer]['map'] = tiles
+  overwrite_file = File.open(level_file,'w')
+  overwrite_file.write(JSON.neat_generate(data_hash))
+  overwrite_file.close
 end
 
+
+
 tiles = build_tiles
-json_writer(tiles)
+write_to_level(tiles)
