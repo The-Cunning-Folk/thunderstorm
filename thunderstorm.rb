@@ -86,7 +86,7 @@ def build_tiles
     y += 1
   end
   level_file.close
- # tile_stripper(tiles)
+  tile_stripper(tiles)
   tiles
 end
 
@@ -115,7 +115,33 @@ def write_to_level(tiles)
   overwrite_file.close
 end
 
+def convert_pyxel()
+  pyxel_file  = get_file_name('pyxel json file: ',0)
 
 
-tiles = build_tiles
-write_to_level(tiles)
+  file = File.read(pyxel_file)
+  new_data = JSON.parse(file)
+
+  level_file = get_file_name('output json file: ',1)
+  ground_or_ceil = get_ground_or_ceil('ground or ceiling: ').to_s
+  if !ground_or_ceil then return end
+  layer = get_layer('layer: ')
+  if !layer then return end
+
+  master_file = File.read(level_file)
+  master_hash = JSON.parse(master_file)
+
+
+  master_hash[ground_or_ceil]['layers'] = new_data['layers']  
+
+
+  overwrite_file = File.open(level_file,'w')
+  overwrite_file.write(JSON.neat_generate(master_hash))
+  overwrite_file.close
+end
+
+
+#tiles = build_tiles
+#write_to_level(tiles)
+
+convert_pyxel()
