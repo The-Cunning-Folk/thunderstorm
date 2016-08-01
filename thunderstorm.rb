@@ -132,6 +132,25 @@ def convert_pyxel()
   master_hash = JSON.parse(master_file)
 
 
+  new_data['layers'].each do |layer|
+    if layer == nil
+      new_data['layers'] -= [layer]
+    end
+  end
+
+  layer_count = 0
+  new_data['layers'].each do |layer|
+    if layer == nil
+      new_data['layers'] -= [layer]
+    end
+    new_data['layers'][layer_count]['tiles'].each do |tile|
+      if tile["tile"] == -1
+        new_data['layers'][layer_count]['tiles'] -= [tile]
+      end
+    end
+    layer_count +=1
+  end
+
   master_hash[ground_or_ceil]['layers'] = new_data['layers']  
 
 
